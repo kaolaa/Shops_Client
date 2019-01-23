@@ -1,28 +1,30 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <ShopComponent/>
+  <div>
+    <!-- <h2>a test </h2>
+    <img alt="Vue logo" src="../public/assets/logo.png">
+    <ShopComponent/> -->
+    <header-component></header-component>
+    <router-view></router-view>
+    <footer-component></footer-component>
   </div>
 </template>
 
 <script>
-import ShopComponent from './components/ShopComponent.vue'
+import Header from "./components/header/Header";
+import Footer from "./components/footer/Footer";
+// import ShopComponent from "./components/ShopComponent.vue";
 
 export default {
-  name: 'app',
+  name: "app",
   components: {
-    ShopComponent
+    "header-component": Header,
+    "footer-component": Footer,
+    //  ShopComponent
   }
-}
+};
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style lang="scss" src="./global-style.scss">
 </style>
+
+
