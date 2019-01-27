@@ -61,9 +61,9 @@ export default {
       });
     },
     likedshop() {
-    const userid = this.$store.getters.getUserId;
-
-      this.$store.dispatch("loadLikedShops",userid)
+      const userid = this.$store.getters.getUserId;
+      this.$store.commit("showlikedshops", true);
+      this.$store.dispatch("loadLikedShops", userid);
       // .then(() => {
       //   // redirect to homepage
       //   this.$router.push({ name: "homepage-component" });

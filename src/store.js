@@ -191,6 +191,8 @@ export default new Vuex.Store({
     },
     loadLikedShops({ commit }, userid) {
       const url = "http://localhost:2000/api/users/liked?iduser=" + userid;
+      console.log(url);
+
       axios
         .get(url)
         .then(r => r.data)
@@ -264,11 +266,18 @@ export default new Vuex.Store({
         .then(r => r.data)
         .then(data => commit("setmsg", data.msg));
     },
-    // removeFromFavourite({ commit }, data) {
-
-    // },
+    removeFromFavorite({ commit }, data) {
+    const url =
+        "http://localhost:2000/api/users/removelike?iduser=" +
+        data.userid +
+        "&idshop=" +
+        data.shopid;
+      axios
+        .get(url)
+        .then(r => r.data)
+        .then(data => commit("setmsg", data.msg));
+    },
     dislikeShop({ commit }, data) {
-      console.log(data.userid + " " + data.shopid);
       const url =
         "http://localhost:2000/api/users/dislike?iduser=" +
         data.userid +

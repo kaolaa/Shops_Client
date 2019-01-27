@@ -27,18 +27,16 @@
       <div class="card-footer btn-actions">
         <div class="card-footer-item field is-grouped">
           <div class="buttons">
-            <div>
-              <!--  v-show="product.isFavourite" -->
+            <div v-if="!LikedShopsVue()">
               <button
                 class="button is-small"
-                :title="removeFromFavouriteLabel"
+                :title="dislikeShopLabel"
                 @click="dislikeShop(shop._id)"
               >
                 <span class="icon is-small">
                   <i class="fas fa-heart"></i>
                 </span>
               </button>
-              <!-- v-show="!product.isFavourite" -->
               <button
                 class="button is-small btn-right"
                 :title="addToFavouriteLabel"
@@ -48,6 +46,9 @@
                   <i class="far fa-heart"></i>
                 </span>
               </button>
+            </div>
+            <div v-if="LikedShopsVue()">
+              <button class="button is-primary" @click="removeFromFavorite(shop._id)">{{ removeFromFavouriteLabel }}</button>
             </div>
           </div>
         </div>
@@ -82,20 +83,20 @@ export default {
 
   data() {
     return {
-      addToCartLabel: "Add to cart",
       viewDetailsLabel: "Details",
-      removeFromCartLabel: "Remove from cart",
+      dislikeShopLabel: "Dislike a shop",
       addToFavouriteLabel: "Add to favourite",
-      removeFromFavouriteLabel: "dislike a shop",
+      removeFromFavouriteLabel: "Remove from favorite",
       selected: 1,
       quantityArray: [],
-      Shopadresse: "test"
+      Shopadresse: ""
     };
   },
 
   mounted() {
     for (let i = 1; i <= 20; i++) {
       this.quantityArray.push(i);
+      // console.log(this.LikedShopsVue());
     }
 
     if (this.$props.shop.quantity > 1) {
@@ -106,6 +107,13 @@ export default {
   computed: {},
 
   methods: {
+    LikedShopsVue() {
+      if (this.$store.getters.islikedshopspage) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     getadress(lng, lat) {
       const googlekey = "AIzaSyDt2EcehfMjQFOrtH6BaMWtRs0glx4SrRQ";
       const url =
@@ -129,8 +137,18 @@ export default {
         this.$store.commit("showLoginModal", true);
       }
     },
+    removeFromFavorite(shopid) {
+      let isUserLogged = this.$store.state.userInfo.isLoggedIn;
+      const userid = this.$store.getters.getUserId;
+      if (isUserLogged) {
+        this.$store.dispatch("removeFromFavorite", { shopid, userid });
+        this.$store.dispatch("loadLikedShops", userid);
+      } else {
+        this.$store.commit("showLoginModal", true);
+      }
+    },
     dislikeShop(shopid) {
-       let isUserLogged = this.$store.state.userInfo.isLoggedIn;
+      let isUserLogged = this.$store.state.userInfo.isLoggedIn;
       const userid = this.$store.getters.getUserId;
       if (isUserLogged) {
         this.$store.dispatch("dislikeShop", { shopid, userid });
