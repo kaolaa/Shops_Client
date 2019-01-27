@@ -30,7 +30,8 @@ export default {
     };
   },
   mounted() {
-    this.$store.dispatch("loadShops");
+    // this.$store.dispatch("loadShops");
+    this.$store.dispatch("loadNearShop");
   },
   methods: {}
 };

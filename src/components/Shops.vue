@@ -19,17 +19,31 @@
             <strong>{{ shop.city }}</strong>
           </span>
         </p>
+        <p>
+          {{ getadress(shop.location.coordinates[0],shop.location.coordinates[1]) }}
+          {{Shopadresse}}
+        </p>
       </div>
       <div class="card-footer btn-actions">
         <div class="card-footer-item field is-grouped">
           <div class="buttons">
             <div>
-              <button class="button is-small">
+              <!--  v-show="product.isFavourite" -->
+              <button
+                class="button is-small"
+                :title="removeFromFavouriteLabel"
+                @click="removeFromFavourite(shop._id)"
+              >
                 <span class="icon is-small">
                   <i class="fas fa-heart"></i>
                 </span>
               </button>
-              <button class="button is-small">
+              <!-- v-show="!product.isFavourite" -->
+              <button
+                class="button is-small btn-right"
+                :title="addToFavouriteLabel"
+                @click="saveToFavorite(shop._id)"
+              >
                 <span class="icon is-small">
                   <i class="far fa-heart"></i>
                 </span>
@@ -39,7 +53,7 @@
         </div>
       </div>
     </div>
-    <router-link
+    <!-- <router-link
       class="details"
       :to="{
         path: '/Shop-detail',
@@ -51,11 +65,17 @@
           email: shop.email
         }
       }"
-    ></router-link>
+    ></router-link>-->
   </div>
 </template>
 
 <script>
+import Vue from "vue";
+import axios from "axios";
+import VueAxios from "vue-axios";
+
+Vue.use(VueAxios, axios);
+
 export default {
   name: "Shops-component",
   props: ["shop"],
@@ -68,7 +88,8 @@ export default {
       addToFavouriteLabel: "Add to favourite",
       removeFromFavouriteLabel: "Remove from favourite",
       selected: 1,
-      quantityArray: []
+      quantityArray: [],
+      Shopadresse: "test"
     };
   },
 
@@ -84,7 +105,35 @@ export default {
 
   computed: {},
 
-  methods: {}
+  methods: {
+    getadress(lng, lat) {
+      const googlekey = "AIzaSyDt2EcehfMjQFOrtH6BaMWtRs0glx4SrRQ";
+      const url =
+        "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
+        lat +
+        "," +
+        lng +
+        "&key=" +
+        googlekey;
+      axios.get(url).then(r => {
+        this.Shopadresse = r.data.results[0].formatted_address;
+      });
+    },
+    saveToFavorite(shopid) {
+      let isUserLogged = this.$store.state.userInfo.isLoggedIn;
+      const userid = this.$store.getters.getUserId;
+      if (isUserLogged) {
+        this.$store.dispatch("addToFavourite", { shopid, userid });
+        this.$store.dispatch("loadNearShopUser", userid);
+        console.log(this.$store.state.shops[0].name);
+      } else {
+        this.$store.commit("showLoginModal", true);
+      }
+    },
+    removeFromFavourite(id) {
+      this.$store.commit("removeFromFavourite", id);
+    }
+  }
 };
 </script>
 
@@ -106,9 +155,9 @@ export default {
 .select {
   z-index: 2;
 }
-.select {
+.btn-right {
   position: absolute;
-  right: 15px;
+  right: 30px;
 }
 </style>
 

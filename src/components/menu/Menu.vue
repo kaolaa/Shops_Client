@@ -23,9 +23,9 @@
     <div v-if="isUserLoggedIn" class="navbar-item has-dropdown is-hoverable">
       <a class="navbar-link">Welcome {{ getUserName }}</a>
       <div class="navbar-dropdown is-boxed">
-        
         <hr class="navbar-divider">
         <a class="navbar-item" @click="logout">{{ logoutLabel }}</a>
+        <a class="navbar-item" @click="likedshop">{{ likedshopLable }}</a>
       </div>
     </div>
   </div>
@@ -36,6 +36,7 @@ export default {
   name: "menu-component",
   data() {
     return {
+      likedshopLable: "Liked shops",
       logoutLabel: "Log out",
       loginLabel: "Log in",
       signupLabel: "Sign up"
@@ -49,7 +50,6 @@ export default {
     getUserName() {
       let name = this.$store.getters.getUserName;
       return name;
-      
     }
   },
 
@@ -59,6 +59,15 @@ export default {
         // redirect to homepage
         this.$router.push({ name: "homepage-component" });
       });
+    },
+    likedshop() {
+    const userid = this.$store.getters.getUserId;
+
+      this.$store.dispatch("loadLikedShops",userid)
+      // .then(() => {
+      //   // redirect to homepage
+      //   this.$router.push({ name: "homepage-component" });
+      // });
     },
     showLoginModal() {
       this.$store.commit("showLoginModal", true);
