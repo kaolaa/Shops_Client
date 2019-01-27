@@ -19,13 +19,13 @@ export default new Vuex.Store({
       name: ""
     },
     systemInfo: {
+      showlikedshops: false,
       openLoginModal: false,
       openSignupModal: false
     }
   },
 
   getters: {
-    
     geterror: state => {
       return state.error;
     },
@@ -53,8 +53,8 @@ export default new Vuex.Store({
     isSignupModalOpen: state => {
       return state.systemInfo.openSignupModal;
     },
-    isCheckoutModalOpen: state => {
-      return state.systemInfo.openCheckoutModal;
+    islikedshopspage: state => {
+      return state.systemInfo.showlikedshops;
     },
     quantity: state => {
       return state.shops.quantity;
@@ -113,6 +113,9 @@ export default new Vuex.Store({
     },
     showLoginModal: (state, show) => {
       state.systemInfo.openLoginModal = show;
+    },
+    showlikedshops: (state, show) => {
+      state.systemInfo.showlikedshops = show;
     },
     showSignupModal: (state, show) => {
       state.systemInfo.openSignupModal = show;
@@ -186,8 +189,8 @@ export default new Vuex.Store({
           commit("SET_SHOPS", shop);
         });
     },
-    loadLikedShops({ commit },userid) {
-      const url = "http://localhost:2000/api/users/liked?iduser="+userid;
+    loadLikedShops({ commit }, userid) {
+      const url = "http://localhost:2000/api/users/liked?iduser=" + userid;
       axios
         .get(url)
         .then(r => r.data)
@@ -229,7 +232,12 @@ export default new Vuex.Store({
             lat = position.coords.latitude;
             lng = position.coords.longitude;
             const url =
-              "http://localhost:2000/api/users/near?iduser="+iduser+"&lat="+lat+"&lng="+lng;
+              "http://localhost:2000/api/users/near?iduser=" +
+              iduser +
+              "&lat=" +
+              lat +
+              "&lng=" +
+              lng;
             console.log(url);
             axios
               .get(url)
@@ -246,9 +254,23 @@ export default new Vuex.Store({
       });
     },
     addToFavourite({ commit }, data) {
-      console.log(data.userid + " " + data.shopid);
       const url =
         "http://localhost:2000/api/users/like?iduser=" +
+        data.userid +
+        "&idshop=" +
+        data.shopid;
+      axios
+        .get(url)
+        .then(r => r.data)
+        .then(data => commit("setmsg", data.msg));
+    },
+    // removeFromFavourite({ commit }, data) {
+
+    // },
+    dislikeShop({ commit }, data) {
+      console.log(data.userid + " " + data.shopid);
+      const url =
+        "http://localhost:2000/api/users/dislike?iduser=" +
         data.userid +
         "&idshop=" +
         data.shopid;

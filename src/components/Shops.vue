@@ -32,7 +32,7 @@
               <button
                 class="button is-small"
                 :title="removeFromFavouriteLabel"
-                @click="removeFromFavourite(shop._id)"
+                @click="dislikeShop(shop._id)"
               >
                 <span class="icon is-small">
                   <i class="fas fa-heart"></i>
@@ -86,7 +86,7 @@ export default {
       viewDetailsLabel: "Details",
       removeFromCartLabel: "Remove from cart",
       addToFavouriteLabel: "Add to favourite",
-      removeFromFavouriteLabel: "Remove from favourite",
+      removeFromFavouriteLabel: "dislike a shop",
       selected: 1,
       quantityArray: [],
       Shopadresse: "test"
@@ -125,13 +125,19 @@ export default {
       if (isUserLogged) {
         this.$store.dispatch("addToFavourite", { shopid, userid });
         this.$store.dispatch("loadNearShopUser", userid);
-        console.log(this.$store.state.shops[0].name);
       } else {
         this.$store.commit("showLoginModal", true);
       }
     },
-    removeFromFavourite(id) {
-      this.$store.commit("removeFromFavourite", id);
+    dislikeShop(shopid) {
+       let isUserLogged = this.$store.state.userInfo.isLoggedIn;
+      const userid = this.$store.getters.getUserId;
+      if (isUserLogged) {
+        this.$store.dispatch("dislikeShop", { shopid, userid });
+        this.$store.dispatch("loadNearShopUser", userid);
+      } else {
+        this.$store.commit("showLoginModal", true);
+      }
     }
   }
 };
