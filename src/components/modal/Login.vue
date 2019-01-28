@@ -18,6 +18,7 @@
                   type="email"
                   :placeholder="emailPlaceholder"
                   name="emailName"
+                  required
                   v-model="email"
                   @keyup="checkEmailOnKeyUp(email)"
                 >
@@ -39,6 +40,7 @@
                   type="password"
                   placeholder="Your password"
                   name="passwordName"
+                  required
                   v-model="password"
                   @keyup="checkPasswordOnKeyUp(password)"
                 >
@@ -124,34 +126,27 @@ export default {
     },
     checkForm(e) {
       e.preventDefault();
-      this.highlightEmailWithError = false;
-      this.highlightPasswordWithError = false;
-
       const email = this.email;
       const password = this.password;
       if (email && password) {
-        this.$store
-          .dispatch("login", { email, password })
-          .then(() => {
-            this.error = this.$store.getters.geterror;
-            if (this.error !== "") {
-              if (this.error.includes("Email")) {
-                this.highlightEmailWithError = true;
-                this.emailRequiredLabel = this.$store.getters.geterror;
-              }
-              if (this.error.includes("pass")) {
-                this.highlightPasswordWithError = true;
-                this.passwordRequiredLabel = this.$store.getters.geterror;
-              }
-            } else {
-              this.email == "";
-              this.password == "";
-              this.$router.push("/");
-              this.isFormSuccess = true;
-              this.$store.commit("isUserLoggedIn", this.isFormSuccess);
+        this.$store.dispatch("login", { email, password }).then(() => {
+          if (this.$store.getters.geterror !== "") {
+            if (this.error.includes("Email")) {
+              this.highlightEmailWithError = true;
+              this.emailRequiredLabel = this.$store.getters.geterror;
             }
-          })
-          .catch(err => (this.error = err));
+            if (this.error.includes("pass")) {
+              this.highlightPasswordWithError = true;
+              this.passwordRequiredLabel = this.$store.getters.geterror;
+            }
+          } else {
+            const userid = this.$store.getters.getUserId;
+
+            this.$router.push("/");
+            this.$store.dispatch("loadNearShopUser", userid);
+            this.$store.commit("isUserLoggedIn", true);
+          }
+        });
       }
     },
     checkEmailOnKeyUp(emailValue) {
@@ -171,10 +166,6 @@ export default {
       } else {
         this.highlightPasswordWithError = true;
       }
-    },
-    Emptyfields() {
-      this.email == "";
-      this.password == "";
     }
   }
 };

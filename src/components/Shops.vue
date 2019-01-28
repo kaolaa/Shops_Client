@@ -94,14 +94,7 @@ export default {
   },
 
   mounted() {
-    for (let i = 1; i <= 20; i++) {
-      this.quantityArray.push(i);
-      // console.log(this.LikedShopsVue());
-    }
-
-    if (this.$props.shop.quantity > 1) {
-      this.selected = this.$props.shop.quantity;
-    }
+  
   },
 
   computed: {},

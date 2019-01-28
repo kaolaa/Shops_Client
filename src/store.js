@@ -198,6 +198,8 @@ export default new Vuex.Store({
         .then(r => r.data)
         .then(shop => {
           commit("SET_SHOPS", shop);
+          commit("showlikedshops", true);
+
         });
     },
     loadNearShop({ commit }) {
@@ -217,6 +219,7 @@ export default new Vuex.Store({
               .then(data => data.data)
               .then(shops => {
                 commit("SET_SHOPS", shops);
+                commit("showlikedshops", false);
               });
           },
           err => {
@@ -226,35 +229,26 @@ export default new Vuex.Store({
       });
     },
     loadNearShopUser({ commit }, iduser) {
-      return new Promise((resolve, reject) => {
-        let lng;
-        let lat;
         navigator.geolocation.getCurrentPosition(
           position => {
-            lat = position.coords.latitude;
-            lng = position.coords.longitude;
+            let lat = position.coords.latitude;
+            let lng = position.coords.longitude;
             const url =
-              "http://localhost:2000/api/users/near?iduser=" +
-              iduser +
-              "&lat=" +
-              lat +
-              "&lng=" +
-              lng;
-            console.log(url);
+              "http://localhost:2000/api/users/near?iduser="+iduser+"&lat="+lat+"&lng="+lng;
             axios
               .get(url)
               .then(r => r.data)
               .then(data => data.data)
               .then(shops => {
                 commit("SET_SHOPS", shops);
+                commit("showlikedshops", false);
               });
           },
           err => {
-            reject(err);
+            throw(err);
           }
         );
-      });
-    },
+      },
     addToFavourite({ commit }, data) {
       const url =
         "http://localhost:2000/api/users/like?iduser=" +
@@ -267,7 +261,7 @@ export default new Vuex.Store({
         .then(data => commit("setmsg", data.msg));
     },
     removeFromFavorite({ commit }, data) {
-    const url =
+      const url =
         "http://localhost:2000/api/users/removelike?iduser=" +
         data.userid +
         "&idshop=" +

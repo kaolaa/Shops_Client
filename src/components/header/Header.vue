@@ -19,11 +19,7 @@
         </a>
       </div>
 
-      <div class="navbar-menu is-active">
-        <div class="navbar-start">
-          <div class="navbar-item field"></div>
-        </div>
-      </div>
+ 
 
       <!-- For mobile and tablet -->
       <div v-show="isMenuOpen" class="navbar-end">
@@ -34,6 +30,9 @@
       <div class="navbar-end is-hidden-mobile">
         <menu-component></menu-component>
       </div>
+               
+                
+
     </nav>
   </div>
 </template>
@@ -46,11 +45,7 @@ export default {
 
   data() {
     return {
-      linkedinTooltip: "Follow us on Linkedin",
-      facebookTooltip: "Follow us on Facebook",
-      twitterTooltip: "Follow us on Twitter",
-      instagramTooltip: "Follow us on Instagram",
-      isCheckoutActive: false,
+    
       isMenuOpen: false
     };
   },
@@ -61,7 +56,9 @@ export default {
     "menu-component": Menu
   },
 
-  methods: {}
+  methods: {
+    
+  }
 };
 </script>
 
